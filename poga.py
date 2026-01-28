@@ -2,10 +2,10 @@ import tkinter as tk
 from tkinter import messagebox
 import time
 
-
 root = tk.Tk()
 click_count = 0
 start_time = 0
+click_speed = 0
 
 def setup_start_screen():
     global start_frame
@@ -26,13 +26,15 @@ def start_game():
     ttime()
 
 def setup_game_screen():
-    global game_frame, click_label, click_button, time_label
+    global game_frame, click_label, click_button, time_label, click_speed_label
     game_frame = tk.Frame(root)
     game_frame.pack(fill='both', expand=True)
 
-    global click_count
     click_label = tk.Label(game_frame, text=f"Spiešanas skaits: {click_count}", font=('Verdana', 16))
     click_label.pack(pady=20)
+
+    click_speed_label = tk.Label(game_frame, text=f"Vidējais spiešanas ātrums: {click_speed:.2f}", font=('Verdana', 16))
+    click_speed_label.pack(pady=20)
 
     click_button = tk.Button(game_frame, text="Spied mani!", command=click)
     click_button.pack(pady=20)
@@ -46,8 +48,14 @@ def click():
     click_label.config(text=f"Spiešanas skaits: {click_count}")
 
 def ttime():
-    elapsed_time = int(time.time() - start_time)
-    time_label.config(text=f"Laiks: {elapsed_time}s")
+    global start_time, click_speed_label, click_count
+    elapsed_time = time.time() - start_time
+    time_label.config(text=f"Laiks: {int(elapsed_time)}s")
+
+    if click_count > 0:
+        click_speed = click_count / elapsed_time
+        click_speed_label.config(text=f"Vidējais spiešanas ātrums: {click_speed:.2f} klikšķi/sec")
+
     root.after(1000, ttime)
 
 def end_game():
